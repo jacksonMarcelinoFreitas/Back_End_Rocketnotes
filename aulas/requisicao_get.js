@@ -12,7 +12,7 @@ app.get ("/message/:id/:user", (request, response) =>{
 
 app.get("/users", (request, response) => {
     const {page, limit} = request.query; 
-    response.send(`Page: ${page}. Mostar: ${limit}`);
+    response.send(`Page: ${page}. Mostrar: ${limit}`);
 })
 
 const PORT = 8080;
