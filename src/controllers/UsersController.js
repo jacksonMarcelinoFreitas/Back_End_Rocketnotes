@@ -4,6 +4,9 @@ const AppError = require('../utils/AppError')
 
 const sqliteConnection = require("../database/sqlite")
 
+const knex = require("../database/knex");
+
+
 /*
     no máximo um controller tem 5 métodos
 
@@ -12,9 +15,9 @@ const sqliteConnection = require("../database/sqlite")
     - create - POST para criar um registo
     - update - PUT para atualizar um registro
     - delete - DELETE para remover um registro
-*/ 
+*/
 class UsersController {
-    
+
     async create(request, response){
         const { name, email, password } = request.body;
 
@@ -34,10 +37,11 @@ class UsersController {
 
     async update(request,response){
         const { name, email, password, old_password } = request.body;
-        const { id } = request.params;
+        // const { id } = request.params; - não se faz mais necessário
+        const  user_id  = request.user.id;
 
         const database = await sqliteConnection();
-        const user = await database.get('SELECT * FROM users WHERE id = (?)', [id]);
+        const user = await database.get('SELECT * FROM users WHERE id = (?)', [user_id]);
 
         if(!user){
             throw new AppError('Usuário não encontrado!');
@@ -75,9 +79,18 @@ class UsersController {
             updated_at = DATETIME('now')
             WHERE id = ?
             `,
-            [user.name, user.email, user.password, id])
+            [user.name, user.email, user.password, user_id])
 
         return response.status(200).json();
+    }
+
+    async show(request, response){
+        const { id }  = request.params;
+        const user = await knex('users')
+        .where({ id })
+        .first();
+
+        return response.json(user)
     }
 
 }
