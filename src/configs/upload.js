@@ -6,7 +6,7 @@ const crypto = require("crypto");
 const TMP_FOLDER = path.resolve(__dirname, "..","..","tmp");
 
 //onde a imagem vai ficar
-const UPLOADS_FOLDER = path.resolve(__dirname, "uploads");
+const UPLOADS_FOLDER = path.resolve(TMP_FOLDER, "uploads");
 
 
 //biblioteca para fazer o upload
@@ -15,7 +15,7 @@ const MULTER = {
     destination: TMP_FOLDER,
     filename(request, file, callback){
       const fileHash = crypto.randomBytes(10).toString("Hex");
-      const fileName = `${file.originalname}-${fileHash}`;
+      const fileName = `${fileHash}-${file.originalname}`;
 
       return callback(null, fileName);
     },
