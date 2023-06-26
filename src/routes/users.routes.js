@@ -1,6 +1,7 @@
 
 const { Router } = require('express');
 const UsersController = require('../controllers/UsersController');
+const UserAvatarController = require('../controllers/UserAvatarController');
 const ensureAuthenticated = require('../middlewares/ensureAuthenticated'); //midleware de autenticação
 const multer = require('multer');
 const uploadConfig = require('../configs/upload');
@@ -10,14 +11,12 @@ const upload = multer(uploadConfig.MULTER); //inicializando multer e passando co
 
 
 const usersController = new UsersController();
+const userAvatarController = new UserAvatarController();
 
 usersRoutes.post('/', usersController.create);
 usersRoutes.put('/', ensureAuthenticated, usersController.update); //para mais de um registro
 usersRoutes.get('/:id', usersController.show);
-usersRoutes.patch('/avatar', ensureAuthenticated, upload.single('avatar'), (request, response) => {
-    console.log(request.file.filename);
-    response.json();
-} ); //para um registro especifico
+usersRoutes.patch('/avatar', ensureAuthenticated, upload.single('avatar'), userAvatarController.update); //para um registro especifico
 
 
 module.exports = usersRoutes;
