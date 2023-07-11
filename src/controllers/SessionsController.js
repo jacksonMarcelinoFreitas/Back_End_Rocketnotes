@@ -1,6 +1,6 @@
-const knex = require('../database/knex');
 const authConfig = require('../configs/auth');
 const AppError = require('../utils/AppError');
+const knex = require('../database/knex');
 const { compare } = require('bcryptjs');
 const { sign } = require('jsonwebtoken');
 
@@ -8,7 +8,8 @@ class SessionsController{
   async create(request, response){
     const {email, password} = request.body;
 
-    const user = await knex('users').where({ email }).first() //fazendo o select no banco
+    //fazendo o select no banco
+    const user = await knex('users').where({ email }).first()
 
     if(!user){
       throw new AppError('E-mail e/ou senha incorreta', 401);
@@ -26,8 +27,8 @@ class SessionsController{
       expiresIn
     })
 
-
-    return response.json({user, token}); //importante para garantir a parada da execução;
+    //o return é importante para garantir a parada da execução;
+    return response.json({user, token});
   }
 }
 
