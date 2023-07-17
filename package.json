@@ -20,7 +20,7 @@
     "nodemon": "^2.0.21"
   },
   "scripts": {
-    "start": "sudo pm2-runtime start ecosystem.config.js --env production",
+    "start": "./node_modules/.bin/pm2 start ecosystem.config.js --env production",
     "dev": "nodemon ./src/server.js",
     "migrate": "knex migrate:latest"
   },
