@@ -9,7 +9,6 @@ const knex = require("../database/knex");
 const UserRepository = require('../repositories/UserRepository');
 
 const UserCreateService = require('../services/UserCreateService');
-const UserRepository = require('../repositories/UserRepository');
 
 
 /*
