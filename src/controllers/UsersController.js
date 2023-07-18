@@ -6,6 +6,11 @@ const sqliteConnection = require("../database/sqlite")
 
 const knex = require("../database/knex");
 
+const UserRepository = require('../repositories/UserRepository');
+
+const UserCreateService = require('../services/UserCreateService');
+const UserRepository = require('../repositories/UserRepository');
+
 
 /*
     no máximo um controller tem 5 métodos
@@ -21,16 +26,11 @@ class UsersController {
     async create(request, response){
         const { name, email, password } = request.body;
 
-        const database = await sqliteConnection();
-        const checkUserExists = await database.get('SELECT * FROM users where email = (?)', [email]);
+        const userRepository = new UserRepository();
+        //ingeção de dependencia - inversão de
+        const userCreateService = new UserCreateService(userRepository);
 
-        if(checkUserExists){
-            throw new AppError('Este email já está em uso!');
-        }
-
-        const hashedPassword = await hash(password, 8); //passar senha e o fator de complexidade
-
-        await database.run('INSERT INTO users (name, email, password) VALUES (?, ?, ?)', [name, email, hashedPassword]);
+        await userCreateService.execute({name, email, password})
 
         return response.status(201).json();
     }
@@ -50,7 +50,7 @@ class UsersController {
         const userWithUpdatedEmail = await database.get('SELECT * FROM users WHERE email = (?)', [email]);
 
         if(userWithUpdatedEmail && userWithUpdatedEmail.id !== user.id){
-            throw new AppError("Este email já está em uso")
+            throw new AppError("Este email já está em uso.")
         }
 
         user.name = name ?? user.name;
