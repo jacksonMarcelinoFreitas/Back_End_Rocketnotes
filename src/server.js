@@ -9,7 +9,6 @@ const cors = require('cors');
 
 migrationsRun();
 
-
 const app = express();
 app.use(cors()); //integrar front-end e back-end
 app.use(express.json());
